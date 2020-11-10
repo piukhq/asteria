@@ -19,9 +19,9 @@ class PaymentCardAccount(object):
 
 
 @dataclass
-class Issuer(object):
+class PaymentCard(object):
     id: int
-    name: str
+    slug: str
 
 
 def load_session() -> "Session":
@@ -31,7 +31,7 @@ def load_session() -> "Session":
 
     # map container class to relative table in the hermes database
     mapper(PaymentCardAccount, Table("payment_card_paymentcardaccount", metadata, autoload=True))
-    mapper(Issuer, Table("payment_card_issuer", metadata, autoload=True))
+    mapper(PaymentCard, Table("payment_card_paymentcard", metadata, autoload=True))
 
     session = sessionmaker(bind=engine)
     return session()
