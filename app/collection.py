@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 def collect_payment_card_status(prefix: str, session: "Session") -> "Metric":
-    PAYMENT_CARD_STATUS = GaugeMetricFamily(
+    payment_card_status_metric = GaugeMetricFamily(
         name=prefix + "payment_card_status_total",
         documentation="payment card total current statuses by issuer",
         labels=("status", "issuer"),
@@ -31,9 +31,9 @@ def collect_payment_card_status(prefix: str, session: "Session") -> "Metric":
         .all()
     )
     for issuer, status, count in pcard_status_data:
-        PAYMENT_CARD_STATUS.add_metric(
+        payment_card_status_metric.add_metric(
             labels=[PAYMENT_CARD_STATUS_MAP.get(status, "unknwon"), issuer],
             value=count,
             timestamp=now,
         )
-    return PAYMENT_CARD_STATUS
+    return payment_card_status_metric
