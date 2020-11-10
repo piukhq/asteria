@@ -12,5 +12,4 @@ RUN apt-get update && \
 
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD [ "gunicorn", "--workers=1", "--threads=1", "--error-logfile=-", \
-                  "--access-logfile=-", "--bind=0.0.0.0:9000", "wsgi:app" ]
+CMD [ "python", "wsgi.py" ]
