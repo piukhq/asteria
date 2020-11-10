@@ -8,7 +8,7 @@ logging.basicConfig(format=LOG_FORMAT, level=LOG_LEVEL)
 LOGGER = logging.getLogger("Asteria")
 
 # wsgi
-ASTERIA_PORT = int(getenv("ASTERIA_PORT", "5500"))
+ASTERIA_PORT = int(getenv("ASTERIA_PORT", "9100"))
 
 # database
 POSTGRES_DSN = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}".format(
