@@ -20,7 +20,6 @@ POSTGRES_DSN = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}".fo
 )
 
 # configs
-COLLECTION_INTERVAL = float(getenv("COLLECTION_INTERVAL", "10.0"))
 PAYMENT_CARD_STATUS_MAP = {
     0: "pending",
     1: "active",
