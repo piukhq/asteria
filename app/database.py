@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import MetaData, Table, create_engine
@@ -16,6 +17,7 @@ class PaymentCardAccount(object):
     id: int
     status: int
     is_deleted: bool
+    created: datetime
 
 
 @dataclass
