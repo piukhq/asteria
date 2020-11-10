@@ -52,6 +52,7 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
         )
         .group_by(PaymentCardAccount.status)
         .filter(
+            PaymentCardAccount.is_deleted == False, # noqa
             PaymentCardAccount.status == 0,
             PaymentCardAccount.created < now - timedelta(hours=24),
         )
@@ -66,8 +67,7 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
 
 
 class CustomCollector(object):
-    def __init__(self) -> None:
-        self.prefix = "hermes_current_"
+    prefix = "hermes_current_"
 
     def collect(self) -> Generator:
         now = datetime.now()
