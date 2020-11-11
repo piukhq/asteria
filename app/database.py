@@ -17,7 +17,7 @@ class PaymentCardAccount(object):
     id: int
     status: int
     is_deleted: bool
-    created: datetime
+    updated: datetime
 
 
 @dataclass

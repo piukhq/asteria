@@ -33,7 +33,7 @@ def collect_payment_card_status(prefix: str, session: "Session", now: datetime) 
     )
     for issuer, status, count in pcard_status_data:
         payment_card_status_metric.add_metric(
-            labels=[PAYMENT_CARD_STATUS_MAP.get(status, "unknwon"), issuer],
+            labels=[PAYMENT_CARD_STATUS_MAP.get(status, "unknown"), issuer],
             value=count,
             timestamp=timestamp,
         )
@@ -54,7 +54,7 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
         .filter(
             PaymentCardAccount.is_deleted == False, # noqa
             PaymentCardAccount.status == 0,
-            PaymentCardAccount.created < now - timedelta(hours=24),
+            PaymentCardAccount.updated < now - timedelta(hours=24),
         )
         .scalar()
     ) or 0
