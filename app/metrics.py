@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Generator
 
 from prometheus_client.metrics_core import GaugeMetricFamily
-from settings import PAYMENT_CARD_STATUS_MAP
+from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
 from sqlalchemy import func
 
 from app.database import PaymentCard, PaymentCardAccount, load_session
@@ -18,11 +18,11 @@ def collect_payment_card_status(prefix: str, session: "Session", now: datetime) 
     payment_card_status_metric = GaugeMetricFamily(
         name=prefix + "payment_card_status_total",
         documentation="payment card total current statuses by issuer",
-        labels=("status", "issuer"),
+        labels=("status", "provider"),
     )
     pcard_status_data = (
         session.query(
-            PaymentCard.slug,
+            PaymentCard.system,
             PaymentCardAccount.status,
             func.count(PaymentCardAccount.id),
         )
@@ -31,9 +31,12 @@ def collect_payment_card_status(prefix: str, session: "Session", now: datetime) 
         .group_by(PaymentCard.id, PaymentCardAccount.status)
         .all()
     )
-    for issuer, status, count in pcard_status_data:
+    for system, status, count in pcard_status_data:
         payment_card_status_metric.add_metric(
-            labels=[PAYMENT_CARD_STATUS_MAP.get(status, "unknown"), issuer],
+            labels=[
+                PAYMENT_CARD_STATUS_MAP.get(status, "unknown"),
+                PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown")
+            ],
             value=count,
             timestamp=timestamp,
         )

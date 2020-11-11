@@ -23,7 +23,7 @@ class PaymentCardAccount(object):
 @dataclass
 class PaymentCard(object):
     id: int
-    slug: str
+    system: str
 
 
 def load_session() -> "Session":
