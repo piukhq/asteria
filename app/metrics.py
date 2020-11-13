@@ -33,7 +33,10 @@ def collect_payment_card_status(prefix: str, session: "Session", now: datetime) 
     )
     for system, status, count in pcard_status_data:
         payment_card_status_metric.add_metric(
-            labels=[PAYMENT_CARD_STATUS_MAP.get(status, "unknown"), PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown")],
+            labels=(
+                PAYMENT_CARD_STATUS_MAP.get(status, "unknown"),
+                PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown"),
+            ),
             value=count,
             timestamp=timestamp,
         )
