@@ -47,24 +47,31 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
     payment_card_pending_overdue_metric = GaugeMetricFamily(
         name=prefix + "payment_card_pending_overdue_total",
         documentation="total payment cards in a pending state for more than 24 hours.",
+        labels=("provider",)
     )
     payment_card_pending_overdue_data = (
         session.query(
+            PaymentCard.system,
             func.count(PaymentCardAccount.id),
         )
-        .group_by(PaymentCardAccount.status)
+        .group_by(
+            PaymentCard.system,
+            PaymentCardAccount.status
+        )
+        .join(PaymentCard)
         .filter(
             PaymentCardAccount.is_deleted == False,  # noqa
             PaymentCardAccount.status == 0,
             PaymentCardAccount.updated < now - timedelta(hours=24),
         )
-        .scalar()
-    ) or 0
-    payment_card_pending_overdue_metric.add_metric(
-        labels=[],
-        value=payment_card_pending_overdue_data,
-        timestamp=timestamp,
+        .all()
     )
+    for system, count in payment_card_pending_overdue_data:
+        payment_card_pending_overdue_metric.add_metric(
+            labels=(PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown"),),
+            value=count,
+            timestamp=timestamp,
+        )
     return payment_card_pending_overdue_metric
 
 
