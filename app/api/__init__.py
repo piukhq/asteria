@@ -1,10 +1,10 @@
 import falcon
 from prometheus_client import REGISTRY
+from sqlalchemy.exc import DBAPIError
 
 from app.api.resources import Healthz, Metrics
 from app.metrics import CustomCollector
 from settings import LOGGER
-from sqlalchemy.exc import DBAPIError
 
 
 def database_exception_handler(req, resp, ex, params):

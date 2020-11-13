@@ -1,7 +1,8 @@
+from urllib.parse import parse_qs
+
 import falcon
 from prometheus_client import REGISTRY
 from prometheus_client.exposition import choose_encoder
-from urllib.parse import parse_qs
 
 
 class Metrics:
