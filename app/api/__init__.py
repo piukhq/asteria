@@ -1,3 +1,5 @@
+from typing import Any, NoReturn
+
 import falcon
 from prometheus_client import REGISTRY
 from sqlalchemy.exc import DBAPIError
@@ -7,12 +9,12 @@ from app.metrics import CustomCollector
 from settings import LOGGER
 
 
-def database_exception_handler(req, resp, ex, params):
+def database_exception_handler(req: falcon.Request, resp: falcon.Response, ex: DBAPIError, params: Any) -> NoReturn:
     LOGGER.exception("Database disconnected abnormally.")
     raise falcon.HTTPError(falcon.HTTP_500, "Database disconnected abnormally.")
 
 
-def create_app():
+def create_app() -> falcon.API:
     LOGGER.info("Registering metrics.")
     REGISTRY.register(CustomCollector())
     app = falcon.API(media_type="text/plain")
