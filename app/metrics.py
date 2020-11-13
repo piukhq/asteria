@@ -76,11 +76,8 @@ class CustomCollector(object):
         now = datetime.now()
         session = load_session()
 
-        try:
-            # add here custom metrics collection
-            yield collect_payment_card_status(self.prefix, session, now)
-            yield collect_payment_card_pending_overdue(self.prefix, session, now)
-        except OperationalError as e:
-            LOGGER.exception("Postgres statement timeout.", exc_info=e)
+        # add here custom metrics collection
+        yield collect_payment_card_status(self.prefix, session, now)
+        yield collect_payment_card_pending_overdue(self.prefix, session, now)
 
         session.close()
