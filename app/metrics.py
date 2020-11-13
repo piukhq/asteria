@@ -1,12 +1,11 @@
-
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Generator
 
 from prometheus_client.metrics_core import GaugeMetricFamily
-from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
 from sqlalchemy import func
 
 from app.database import PaymentCard, PaymentCardAccount, load_session
+from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
 
 if TYPE_CHECKING:
     from prometheus_client import Metric
@@ -33,10 +32,10 @@ def collect_payment_card_status(prefix: str, session: "Session", now: datetime) 
     )
     for system, status, count in pcard_status_data:
         payment_card_status_metric.add_metric(
-            labels=[
+            labels=(
                 PAYMENT_CARD_STATUS_MAP.get(status, "unknown"),
-                PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown")
-            ],
+                PAYMENT_CARD_SYSTEM_MAP.get(system, "unknown"),
+            ),
             value=count,
             timestamp=timestamp,
         )
@@ -55,7 +54,7 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
         )
         .group_by(PaymentCardAccount.status)
         .filter(
-            PaymentCardAccount.is_deleted == False, # noqa
+            PaymentCardAccount.is_deleted == False,  # noqa
             PaymentCardAccount.status == 0,
             PaymentCardAccount.updated < now - timedelta(hours=24),
         )
