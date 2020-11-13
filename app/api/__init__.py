@@ -19,5 +19,5 @@ def create_app():
     app.add_error_handler(DBAPIError, database_exception_handler)
     app.add_route("/metrics", Metrics())
     app.add_route("/healthz", Healthz())
-    LOGGER.info("Initialise wsgi app.")
+    LOGGER.info("Initialise falcon app.")
     return app
