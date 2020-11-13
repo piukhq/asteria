@@ -19,6 +19,7 @@ engine = create_engine(
 )
 SessionMaker = sessionmaker(bind=engine)
 
+
 # These models are containers for the metadata of the corresponding table in the DB and will be filled automatically.
 @dataclass
 class PaymentCardAccount(object):
