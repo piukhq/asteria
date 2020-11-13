@@ -3,10 +3,9 @@ from typing import TYPE_CHECKING, Generator
 
 from prometheus_client.metrics_core import GaugeMetricFamily
 from sqlalchemy import func
-from sqlalchemy.exc import OperationalError
 
 from app.database import PaymentCard, PaymentCardAccount, load_session
-from settings import LOGGER, PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
+from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
 
 if TYPE_CHECKING:
     from prometheus_client import Metric
