@@ -28,3 +28,8 @@ PAYMENT_CARD_STATUS_MAP = {
     4: "invalid card details",
     5: "provider server down",
 }
+PAYMENT_CARD_SYSTEM_MAP = {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "amex": "American Express",
+}
