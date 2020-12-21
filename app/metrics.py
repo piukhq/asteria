@@ -76,12 +76,12 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
     return payment_card_pending_overdue_metric
 
 
-def collect_user_count_by_channel(prefix: str, session: "Session", now: datetime) -> "Metric":
+def collect_user_count_by_client_app(prefix: str, session: "Session", now: datetime) -> "Metric":
     timestamp = now.timestamp()
     metric_desc = GaugeMetricFamily(
         name=prefix + "users_total",
-        documentation="total users registered in bink per channel",
-        labels=("channel",)
+        documentation="total users registered in bink per client application",
+        labels=("client_app",)
     )
     metric_data = (
         session.query(
@@ -99,21 +99,21 @@ def collect_user_count_by_channel(prefix: str, session: "Session", now: datetime
         .all()
     )
 
-    for channel, count in metric_data:
+    for client_app, count in metric_data:
         metric_desc.add_metric(
-            labels=(channel,),
+            labels=(client_app,),
             value=count,
             timestamp=timestamp,
         )
     return metric_desc
 
 
-def collect_payment_card_count_by_channel(prefix: str, session: "Session", now: datetime) -> "Metric":
+def collect_payment_card_count_by_client_app(prefix: str, session: "Session", now: datetime) -> "Metric":
     timestamp = now.timestamp()
     metric_desc = GaugeMetricFamily(
         name=prefix + "payment_cards_total",
-        documentation="total payment cards registered in bink per channel",
-        labels=("channel",)
+        documentation="total payment cards registered in bink per client application",
+        labels=("client_app",)
     )
     metric_data = (
         session.query(
@@ -133,21 +133,21 @@ def collect_payment_card_count_by_channel(prefix: str, session: "Session", now: 
         .all()
     )
 
-    for channel, count in metric_data:
+    for client_app, count in metric_data:
         metric_desc.add_metric(
-            labels=(channel,),
+            labels=(client_app,),
             value=count,
             timestamp=timestamp,
         )
     return metric_desc
 
 
-def collect_membership_card_count_by_channel(prefix: str, session: "Session", now: datetime) -> "Metric":
+def collect_membership_card_count_by_client_app(prefix: str, session: "Session", now: datetime) -> "Metric":
     timestamp = now.timestamp()
     metric_desc = GaugeMetricFamily(
         name=prefix + "membership_cards_total",
-        documentation="total membership cards registered in bink per channel",
-        labels=("channel",)
+        documentation="total membership cards registered in bink per client application",
+        labels=("client_app",)
     )
     metric_data = (
         session.query(
@@ -168,9 +168,9 @@ def collect_membership_card_count_by_channel(prefix: str, session: "Session", no
         .all()
     )
 
-    for channel, count in metric_data:
+    for client_app, count in metric_data:
         metric_desc.add_metric(
-            labels=(channel,),
+            labels=(client_app,),
             value=count,
             timestamp=timestamp,
         )
@@ -187,8 +187,8 @@ class CustomCollector(object):
         # add here custom metrics collection
         yield collect_payment_card_status(self.prefix, session, now)
         yield collect_payment_card_pending_overdue(self.prefix, session, now)
-        yield collect_user_count_by_channel(self.prefix, session, now)
-        yield collect_payment_card_count_by_channel(self.prefix, session, now)
-        yield collect_membership_card_count_by_channel(self.prefix, session, now)
+        yield collect_user_count_by_client_app(self.prefix, session, now)
+        yield collect_payment_card_count_by_client_app(self.prefix, session, now)
+        yield collect_membership_card_count_by_client_app(self.prefix, session, now)
 
         session.close()
