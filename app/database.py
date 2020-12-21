@@ -27,12 +27,49 @@ class PaymentCardAccount(object):
     status: int
     is_deleted: bool
     updated: datetime
+    created: datetime
 
 
 @dataclass
 class PaymentCard(object):
     id: int
     system: str
+
+
+@dataclass
+class User(object):
+    id: int
+    date_joined: datetime
+
+
+@dataclass
+class UserClientApplication(object):
+    client_id: int
+    name: str
+
+
+@dataclass
+class SchemeAccount(object):
+    id: int
+    is_deleted: bool
+    created: datetime
+    status: int
+
+
+@dataclass
+class UbiquitiServiceConsent(object):
+    user_id: int
+
+
+@dataclass
+class UbiquitiPaymentCardAccountEntry(object):
+    id: int
+    user_id: int
+
+
+@dataclass
+class UbiquitiSchemeAccountEntry(object):
+    id: int
 
 
 def load_session() -> "Session":
@@ -42,5 +79,11 @@ def load_session() -> "Session":
     # map container class to relative table in the hermes database
     mapper(PaymentCardAccount, Table("payment_card_paymentcardaccount", metadata, autoload=True))
     mapper(PaymentCard, Table("payment_card_paymentcard", metadata, autoload=True))
+    mapper(User, Table("user", metadata, autoload=True))
+    mapper(UserClientApplication, Table("user_clientapplication", metadata, autoload=True))
+    mapper(UbiquitiServiceConsent, Table("ubiquity_serviceconsent", metadata, autoload=True))
+    mapper(UbiquitiPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata, autoload=True))
+    mapper(UbiquitiSchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata, autoload=True))
+    mapper(SchemeAccount, Table("scheme_schemeaccount", metadata, autoload=True))
 
     return SessionMaker()
