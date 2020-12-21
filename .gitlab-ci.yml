@@ -18,7 +18,7 @@ flake8:
   image: binkhq/python:3.9
   script:
     - pip install flake8
-    - flake8 *
+    - flake8
 
 dev:
   stage: dev
