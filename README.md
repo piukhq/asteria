@@ -9,7 +9,7 @@ pipenv install
 
 ## Running
 ```bash
-pipenv run wsgi.py
+pipenv run python wsgi.py
 ```
 
 ## Api Interaction
