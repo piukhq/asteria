@@ -93,9 +93,6 @@ def collect_user_count_by_client_app(prefix: str, session: "Session", now: datet
         )
         .join(UbiquitiServiceConsent)
         .join(UserClientApplication)
-        .filter(
-            User.date_joined < func.current_date()
-        )
         .all()
     )
 
@@ -128,7 +125,6 @@ def collect_payment_card_count_by_client_app(prefix: str, session: "Session", no
         .join(UserClientApplication)
         .filter(
             PaymentCardAccount.is_deleted == False,  # noqa: E712
-            PaymentCardAccount.created < func.current_date()
         )
         .all()
     )
@@ -163,7 +159,6 @@ def collect_membership_card_count_by_client_app(prefix: str, session: "Session",
         .filter(
             SchemeAccount.is_deleted == False,  # noqa: E712
             SchemeAccount.status == 1,
-            SchemeAccount.created < func.current_date()
         )
         .all()
     )
