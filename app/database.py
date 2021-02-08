@@ -75,7 +75,7 @@ class UbiquitiSchemeAccountEntry(object):
 @dataclass
 class VopActivation(object):
     id: int
-    status = int
+    status: int
 
 
 def load_session() -> "Session":

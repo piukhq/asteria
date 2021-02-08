@@ -212,5 +212,6 @@ class CustomCollector(object):
         yield collect_user_count_by_client_app(self.prefix, session, now)
         yield collect_payment_card_count_by_client_app(self.prefix, session, now)
         yield collect_membership_card_count_by_client_app(self.prefix, session, now)
+        yield collect_vop_activations(self.prefix, session, now)
 
         session.close()
