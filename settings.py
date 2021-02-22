@@ -33,3 +33,9 @@ PAYMENT_CARD_SYSTEM_MAP = {
     "mastercard": "Mastercard",
     "amex": "American Express",
 }
+VOP_ACTIVATION_MAP = {
+    1: "Activating",
+    2: "Deactivating",
+    3: "Activated",
+    4: "Deactivated",
+}

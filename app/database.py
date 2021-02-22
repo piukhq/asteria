@@ -72,6 +72,12 @@ class UbiquitiSchemeAccountEntry(object):
     id: int
 
 
+@dataclass
+class VopActivation(object):
+    id: int
+    status: int
+
+
 def load_session() -> "Session":
     clear_mappers()
     metadata = MetaData(engine)
@@ -85,5 +91,6 @@ def load_session() -> "Session":
     mapper(UbiquitiPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata, autoload=True))
     mapper(UbiquitiSchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata, autoload=True))
     mapper(SchemeAccount, Table("scheme_schemeaccount", metadata, autoload=True))
+    mapper(VopActivation, Table("ubiquity_vopactivation", metadata, autoload=True))
 
     return SessionMaker()

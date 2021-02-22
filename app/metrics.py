@@ -5,8 +5,9 @@ from prometheus_client.metrics_core import GaugeMetricFamily
 from sqlalchemy import func
 
 from app.database import PaymentCard, PaymentCardAccount, load_session, UserClientApplication, User, \
-    UbiquitiSchemeAccountEntry, UbiquitiPaymentCardAccountEntry, UbiquitiServiceConsent, SchemeAccount
-from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP
+    UbiquitiSchemeAccountEntry, UbiquitiPaymentCardAccountEntry, UbiquitiServiceConsent, SchemeAccount, \
+    VopActivation
+from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP, VOP_ACTIVATION_MAP
 
 if TYPE_CHECKING:
     from prometheus_client import Metric
@@ -93,9 +94,6 @@ def collect_user_count_by_client_app(prefix: str, session: "Session", now: datet
         )
         .join(UbiquitiServiceConsent)
         .join(UserClientApplication)
-        .filter(
-            User.date_joined < func.current_date()
-        )
         .all()
     )
 
@@ -128,7 +126,6 @@ def collect_payment_card_count_by_client_app(prefix: str, session: "Session", no
         .join(UserClientApplication)
         .filter(
             PaymentCardAccount.is_deleted == False,  # noqa: E712
-            PaymentCardAccount.created < func.current_date()
         )
         .all()
     )
@@ -163,7 +160,6 @@ def collect_membership_card_count_by_client_app(prefix: str, session: "Session",
         .filter(
             SchemeAccount.is_deleted == False,  # noqa: E712
             SchemeAccount.status == 1,
-            SchemeAccount.created < func.current_date()
         )
         .all()
     )
@@ -171,6 +167,32 @@ def collect_membership_card_count_by_client_app(prefix: str, session: "Session",
     for client_app, count in metric_data:
         metric_desc.add_metric(
             labels=(client_app,),
+            value=count,
+            timestamp=timestamp,
+        )
+    return metric_desc
+
+
+def collect_vop_activations(prefix: str, session: "Session", now: datetime) -> "Metric":
+    timestamp = now.timestamp()
+    metric_desc = GaugeMetricFamily(
+        name=prefix + "vop_activation_status_total",
+        documentation="total count of vop activation status",
+        labels=("status",)
+    )
+    metric_data = (
+        session.query(
+            VopActivation.status,
+            func.count(VopActivation.id)
+        )
+        .group_by(
+            VopActivation.status
+        ).all()
+    )
+
+    for status, count in metric_data:
+        metric_desc.add_metric(
+            labels=(VOP_ACTIVATION_MAP.get(status, "unknown"),),
             value=count,
             timestamp=timestamp,
         )
@@ -190,5 +212,6 @@ class CustomCollector(object):
         yield collect_user_count_by_client_app(self.prefix, session, now)
         yield collect_payment_card_count_by_client_app(self.prefix, session, now)
         yield collect_membership_card_count_by_client_app(self.prefix, session, now)
+        yield collect_vop_activations(self.prefix, session, now)
 
         session.close()
