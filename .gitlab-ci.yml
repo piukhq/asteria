@@ -7,14 +7,14 @@ stages:
 
 complexity:
   stage: tests
-  image: binkhq/python:3.9
+  image: ghcr.io/binkhq/python:3.9
   script:
     - pip install xenon flake8_polyfill
     - xenon --max-average A --max-modules B --max-absolute B .
 
 flake8:
   stage: tests
-  image: binkhq/python:3.9
+  image: ghcr.io/binkhq/python:3.9
   script:
     - pip install flake8
     - flake8
