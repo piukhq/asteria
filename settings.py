@@ -11,13 +11,13 @@ LOGGER = logging.getLogger("Asteria")
 ASTERIA_PORT = int(getenv("ASTERIA_PORT", "9100"))
 
 # database
-POSTGRES_DSN = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}".format(
+POSTGRES_DSN = getenv("POSTGRES_DSN" ,"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}".format(
     user=getenv("DATABASE_USER", "postgres"),
     password=getenv("DATABASE_PASSWORD", ""),
     host=getenv("DATABASE_HOST", "localhost"),
     port=getenv("DATABASE_PORT", "5432"),
     name=getenv("DATABASE_NAME", "hermes"),
-)
+))
 
 # configs
 PAYMENT_CARD_STATUS_MAP = {
