@@ -5,6 +5,5 @@ ADD . .
 
 RUN pipenv install --system --deploy --ignore-pipfile
 
-
 ENTRYPOINT [ "linkerd-await", "--" ]
 CMD [ "python", "wsgi.py" ]

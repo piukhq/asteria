@@ -17,7 +17,7 @@ def database_exception_handler(req: falcon.Request, resp: falcon.Response, ex: D
 def create_app() -> falcon.API:
     LOGGER.info("Registering metrics.")
     REGISTRY.register(CustomCollector())
-    app = falcon.API(media_type="text/plain")
+    app = falcon.App(media_type="text/plain")
     app.add_error_handler(DBAPIError, database_exception_handler)
     app.add_route("/metrics", Metrics())
     app.add_route("/healthz", Healthz())
