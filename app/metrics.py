@@ -4,9 +4,18 @@ from typing import TYPE_CHECKING, Generator
 from prometheus_client.metrics_core import GaugeMetricFamily
 from sqlalchemy import func
 
-from app.database import PaymentCard, PaymentCardAccount, load_session, UserClientApplication, User, \
-    UbiquitiSchemeAccountEntry, UbiquitiPaymentCardAccountEntry, UbiquitiServiceConsent, SchemeAccount, \
-    VopActivation
+from app.database import (
+    PaymentCard,
+    PaymentCardAccount,
+    SchemeAccount,
+    UbiquitiPaymentCardAccountEntry,
+    UbiquitiSchemeAccountEntry,
+    UbiquitiServiceConsent,
+    User,
+    UserClientApplication,
+    VopActivation,
+    load_session,
+)
 from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP, VOP_ACTIVATION_MAP
 
 if TYPE_CHECKING:
@@ -49,17 +58,14 @@ def collect_payment_card_pending_overdue(prefix: str, session: "Session", now: d
     payment_card_pending_overdue_metric = GaugeMetricFamily(
         name=prefix + "payment_card_pending_overdue_total",
         documentation="total payment cards in a pending state for more than 24 hours.",
-        labels=("provider",)
+        labels=("provider",),
     )
     payment_card_pending_overdue_data = (
         session.query(
             PaymentCard.system,
             func.count(PaymentCardAccount.id),
         )
-        .group_by(
-            PaymentCard.system,
-            PaymentCardAccount.status
-        )
+        .group_by(PaymentCard.system, PaymentCardAccount.status)
         .join(PaymentCard)
         .filter(
             PaymentCardAccount.is_deleted == False,  # noqa
@@ -82,16 +88,14 @@ def collect_user_count_by_client_app(prefix: str, session: "Session", now: datet
     metric_desc = GaugeMetricFamily(
         name=prefix + "users_total",
         documentation="total users registered in bink per client application",
-        labels=("client_app",)
+        labels=("client_app",),
     )
     metric_data = (
         session.query(
             UserClientApplication.name,
             func.count(User.id),
         )
-        .group_by(
-            UserClientApplication.name
-        )
+        .group_by(UserClientApplication.name)
         .join(UbiquitiServiceConsent)
         .join(UserClientApplication)
         .all()
@@ -111,16 +115,14 @@ def collect_payment_card_count_by_client_app(prefix: str, session: "Session", no
     metric_desc = GaugeMetricFamily(
         name=prefix + "payment_cards_total",
         documentation="total payment cards registered in bink per client application",
-        labels=("client_app",)
+        labels=("client_app",),
     )
     metric_data = (
         session.query(
             UserClientApplication.name,
             func.count(User.id),
         )
-        .group_by(
-            UserClientApplication.name
-        )
+        .group_by(UserClientApplication.name)
         .join(UbiquitiPaymentCardAccountEntry)
         .join(PaymentCardAccount)
         .join(UserClientApplication)
@@ -144,16 +146,14 @@ def collect_membership_card_count_by_client_app(prefix: str, session: "Session",
     metric_desc = GaugeMetricFamily(
         name=prefix + "membership_cards_total",
         documentation="total membership cards registered in bink per client application",
-        labels=("client_app",)
+        labels=("client_app",),
     )
     metric_data = (
         session.query(
             UserClientApplication.name,
             func.count(User.id),
         )
-        .group_by(
-            UserClientApplication.name
-        )
+        .group_by(UserClientApplication.name)
         .join(UbiquitiSchemeAccountEntry)
         .join(SchemeAccount)
         .join(UserClientApplication)
@@ -178,17 +178,9 @@ def collect_vop_activations(prefix: str, session: "Session", now: datetime) -> "
     metric_desc = GaugeMetricFamily(
         name=prefix + "vop_activation_status_total",
         documentation="total count of vop activation status",
-        labels=("status",)
+        labels=("status",),
     )
-    metric_data = (
-        session.query(
-            VopActivation.status,
-            func.count(VopActivation.id)
-        )
-        .group_by(
-            VopActivation.status
-        ).all()
-    )
+    metric_data = session.query(VopActivation.status, func.count(VopActivation.id)).group_by(VopActivation.status).all()
 
     for status, count in metric_data:
         metric_desc.add_metric(
