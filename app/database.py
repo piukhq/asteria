@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 engine = create_engine(
     POSTGRES_DSN,
     poolclass=NullPool,
-    echo=False,
+    echo=True,
 )
 SessionMaker = sessionmaker(bind=engine)
 
