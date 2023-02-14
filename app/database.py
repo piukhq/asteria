@@ -53,23 +53,23 @@ class SchemeAccount(object):
     id: int
     is_deleted: bool
     created: datetime
-    status: int
 
 
 @dataclass
-class UbiquitiServiceConsent(object):
+class UbiquityServiceConsent(object):
     user_id: int
 
 
 @dataclass
-class UbiquitiPaymentCardAccountEntry(object):
+class UbiquityPaymentCardAccountEntry(object):
     id: int
     user_id: int
 
 
 @dataclass
-class UbiquitiSchemeAccountEntry(object):
+class UbiquitySchemeAccountEntry(object):
     id: int
+    link_status: int
 
 
 @dataclass
@@ -87,9 +87,9 @@ def load_session() -> "Session":
     mapper(PaymentCard, Table("payment_card_paymentcard", metadata, autoload=True))
     mapper(User, Table("user", metadata, autoload=True))
     mapper(UserClientApplication, Table("user_clientapplication", metadata, autoload=True))
-    mapper(UbiquitiServiceConsent, Table("ubiquity_serviceconsent", metadata, autoload=True))
-    mapper(UbiquitiPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata, autoload=True))
-    mapper(UbiquitiSchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata, autoload=True))
+    mapper(UbiquityServiceConsent, Table("ubiquity_serviceconsent", metadata, autoload=True))
+    mapper(UbiquityPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata, autoload=True))
+    mapper(UbiquitySchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata, autoload=True))
     mapper(SchemeAccount, Table("scheme_schemeaccount", metadata, autoload=True))
     mapper(VopActivation, Table("ubiquity_vopactivation", metadata, autoload=True))
 
