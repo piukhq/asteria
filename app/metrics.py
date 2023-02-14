@@ -8,9 +8,9 @@ from app.database import (
     PaymentCard,
     PaymentCardAccount,
     SchemeAccount,
-    UbiquitiPaymentCardAccountEntry,
-    UbiquitiSchemeAccountEntry,
-    UbiquitiServiceConsent,
+    UbiquityPaymentCardAccountEntry,
+    UbiquitySchemeAccountEntry,
+    UbiquityServiceConsent,
     User,
     UserClientApplication,
     VopActivation,
@@ -96,7 +96,7 @@ def collect_user_count_by_client_app(prefix: str, session: "Session", now: datet
             func.count(User.id),
         )
         .group_by(UserClientApplication.name)
-        .join(UbiquitiServiceConsent)
+        .join(UbiquityServiceConsent)
         .join(UserClientApplication)
         .all()
     )
@@ -123,7 +123,7 @@ def collect_payment_card_count_by_client_app(prefix: str, session: "Session", no
             func.count(User.id),
         )
         .group_by(UserClientApplication.name)
-        .join(UbiquitiPaymentCardAccountEntry)
+        .join(UbiquityPaymentCardAccountEntry)
         .join(PaymentCardAccount)
         .join(UserClientApplication)
         .filter(
@@ -154,12 +154,12 @@ def collect_membership_card_count_by_client_app(prefix: str, session: "Session",
             func.count(User.id),
         )
         .group_by(UserClientApplication.name)
-        .join(UbiquitiSchemeAccountEntry)
+        .join(UbiquitySchemeAccountEntry)
         .join(SchemeAccount)
         .join(UserClientApplication)
         .filter(
             SchemeAccount.is_deleted == False,  # noqa: E712
-            SchemeAccount.status == 1,
+            UbiquitySchemeAccountEntry.link_status == 1,
         )
         .all()
     )
