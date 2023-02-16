@@ -83,14 +83,14 @@ def load_session() -> "Session":
     metadata = MetaData(engine)
 
     # map container class to relative table in the hermes database
-    mapper(PaymentCardAccount, Table("payment_card_paymentcardaccount", metadata))
-    mapper(PaymentCard, Table("payment_card_paymentcard", metadata))
-    mapper(User, Table("user", metadata))
-    mapper(UserClientApplication, Table("user_clientapplication", metadata))
-    mapper(UbiquityServiceConsent, Table("ubiquity_serviceconsent", metadata))
-    mapper(UbiquityPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata))
-    mapper(UbiquitySchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata))
-    mapper(SchemeAccount, Table("scheme_schemeaccount", metadata))
-    mapper(VopActivation, Table("ubiquity_vopactivation", metadata))
+    mapper(PaymentCardAccount, Table("payment_card_paymentcardaccount", metadata, autoload=True))
+    mapper(PaymentCard, Table("payment_card_paymentcard", metadata, autoload=True))
+    mapper(User, Table("user", metadata, autoload=True))
+    mapper(UserClientApplication, Table("user_clientapplication", metadata, autoload=True))
+    mapper(UbiquityServiceConsent, Table("ubiquity_serviceconsent", metadata, autoload=True))
+    mapper(UbiquityPaymentCardAccountEntry, Table("ubiquity_paymentcardaccountentry", metadata, autoload=True))
+    mapper(UbiquitySchemeAccountEntry, Table("ubiquity_schemeaccountentry", metadata, autoload=True))
+    mapper(SchemeAccount, Table("scheme_schemeaccount", metadata, autoload=True))
+    mapper(VopActivation, Table("ubiquity_vopactivation", metadata, autoload=True))
 
     return SessionMaker()
