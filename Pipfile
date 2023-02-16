@@ -12,7 +12,7 @@ flake8-polyfill = "*"
 black = "*"
 
 [packages]
-sqlalchemy = "*"
+sqlalchemy = "<2"
 psycopg2-binary = "*"
 prometheus-client = "*"
 falcon = "*"
