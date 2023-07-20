@@ -1,3 +1,5 @@
+from collections.abc import Generator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -6,23 +8,19 @@ from sqlalchemy import MetaData, Table, create_engine
 from sqlalchemy.orm import clear_mappers, mapper, sessionmaker
 from sqlalchemy.pool import NullPool
 
-from settings import POSTGRES_DSN
+from asteria.settings import POSTGRES_DSN
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
 
-engine = create_engine(
-    POSTGRES_DSN,
-    poolclass=NullPool,
-    echo=False,
-)
+engine = create_engine(POSTGRES_DSN, poolclass=NullPool, echo=False)
 SessionMaker = sessionmaker(bind=engine)
 
 
 # These models are containers for the metadata of the corresponding table in the DB and will be filled automatically.
 @dataclass
-class PaymentCardAccount(object):
+class PaymentCardAccount:
     id: int
     status: int
     is_deleted: bool
@@ -31,54 +29,55 @@ class PaymentCardAccount(object):
 
 
 @dataclass
-class PaymentCard(object):
+class PaymentCard:
     id: int
     system: str
 
 
 @dataclass
-class User(object):
+class User:
     id: int
     date_joined: datetime
 
 
 @dataclass
-class UserClientApplication(object):
+class UserClientApplication:
     client_id: int
     name: str
 
 
 @dataclass
-class SchemeAccount(object):
+class SchemeAccount:
     id: int
     is_deleted: bool
     created: datetime
 
 
 @dataclass
-class UbiquityServiceConsent(object):
+class UbiquityServiceConsent:
     user_id: int
 
 
 @dataclass
-class UbiquityPaymentCardAccountEntry(object):
+class UbiquityPaymentCardAccountEntry:
     id: int
     user_id: int
 
 
 @dataclass
-class UbiquitySchemeAccountEntry(object):
+class UbiquitySchemeAccountEntry:
     id: int
     link_status: int
 
 
 @dataclass
-class VopActivation(object):
+class VopActivation:
     id: int
     status: int
 
 
-def load_session() -> "Session":
+@contextmanager
+def load_session() -> "Generator[Session, None, None]":
     clear_mappers()
     metadata = MetaData(engine)
 
@@ -93,4 +92,5 @@ def load_session() -> "Session":
     mapper(SchemeAccount, Table("scheme_schemeaccount", metadata, autoload=True))
     mapper(VopActivation, Table("ubiquity_vopactivation", metadata, autoload=True))
 
-    return SessionMaker()
+    with SessionMaker() as db_session:
+        yield db_session

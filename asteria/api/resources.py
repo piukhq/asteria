@@ -11,11 +11,11 @@ class Metrics:
         params = parse_qs(req.query_string)
         encoder, resp.content_type = choose_encoder(req.accept)
         if "name[]" in params:
-            registry = registry.restricted_registry(params["name[]"])
+            registry = registry.restricted_registry(params["name[]"])  # type: ignore [assignment]
 
         resp.data = encoder(registry)
 
 
 class Healthz:
-    def on_get(self, req: falcon.Request, resp: falcon.Response) -> None:
+    def on_get(self, req: falcon.Request, resp: falcon.Response) -> None:  # noqa: ARG002
         resp.status = falcon.HTTP_200
