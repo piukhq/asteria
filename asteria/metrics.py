@@ -1,10 +1,13 @@
+from collections.abc import Generator
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
+from loguru import logger
 from prometheus_client.metrics_core import GaugeMetricFamily
+from prometheus_client.registry import Collector
 from sqlalchemy import func
 
-from app.database import (
+from asteria.database import (
     PaymentCard,
     PaymentCardAccount,
     SchemeAccount,
@@ -16,7 +19,7 @@ from app.database import (
     VopActivation,
     load_session,
 )
-from settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP, VOP_ACTIVATION_MAP
+from asteria.settings import PAYMENT_CARD_STATUS_MAP, PAYMENT_CARD_SYSTEM_MAP, VOP_ACTIVATION_MAP
 
 if TYPE_CHECKING:
     from prometheus_client import Metric
@@ -191,19 +194,18 @@ def collect_vop_activations(prefix: str, session: "Session", now: datetime) -> "
     return metric_desc
 
 
-class CustomCollector(object):
+class CustomCollector(Collector):
     prefix = "hermes_current_"
 
     def collect(self) -> Generator:
-        now = datetime.now()
-        session = load_session()
+        now = datetime.now()  # noqa: DTZ005 we want the local time here
+        with load_session() as session:
+            # add here custom metrics collection
+            yield collect_payment_card_status(self.prefix, session, now)
+            yield collect_payment_card_pending_overdue(self.prefix, session, now)
+            yield collect_user_count_by_client_app(self.prefix, session, now)
+            yield collect_payment_card_count_by_client_app(self.prefix, session, now)
+            yield collect_membership_card_count_by_client_app(self.prefix, session, now)
+            yield collect_vop_activations(self.prefix, session, now)
 
-        # add here custom metrics collection
-        yield collect_payment_card_status(self.prefix, session, now)
-        yield collect_payment_card_pending_overdue(self.prefix, session, now)
-        yield collect_user_count_by_client_app(self.prefix, session, now)
-        yield collect_payment_card_count_by_client_app(self.prefix, session, now)
-        yield collect_membership_card_count_by_client_app(self.prefix, session, now)
-        yield collect_vop_activations(self.prefix, session, now)
-
-        session.close()
+        logger.debug("Metrics collected successfully.")
