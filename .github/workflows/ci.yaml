@@ -42,7 +42,7 @@ jobs:
       - uses: docker/build-push-action@v4
         with:
           build-args: |
-            PIP_INDEX_URL=${{ secrets.AZURE_DEVOPS_PAT_URL }}
+            AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }}
           push: true
           tags: |
             binkcore.azurecr.io/asteria:${{ steps.date.outputs.date }}
