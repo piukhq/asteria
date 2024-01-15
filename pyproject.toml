@@ -1,8 +1,3 @@
-[[tool.poetry.source]]
-name = "bink-pypi"
-url = "https://pypi.gb.bink.com/simple"
-priority = "explicit"
-
 [tool.poetry]
 name = "asteria"
 version = "1.3.0"
@@ -10,6 +5,15 @@ description = "Prometheus pull server for Hermes database metrics"
 authors = ["Bink <bink@bink.bink>"]
 readme = "README.md"
 packages = [{include = "asteria"}]
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "azure"
+url = "https://pkgs.dev.azure.com/binkhq/_packaging/binkhq/pypi/simple/"
+priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -19,7 +23,7 @@ prometheus-client = "^0.17.1"
 falcon = "^3.1.1"
 gunicorn = "^20.1.0"
 python-decouple = "^3.8"
-bink-logging-utils = {extras = ["gunicorn"], version = "^1.3.0", source = "bink-pypi"}
+bink-logging-utils = {extras = ["gunicorn"], version = "^1.3.0", source="azure"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
@@ -98,3 +102,8 @@ select = [
 
 [tool.ruff.per-file-ignores]
 "asteria/database.py" = ["A003"]
+
+[tool.refurb]
+ignore = [
+    "FURB184",  # some chaining suggestions don't make sense
+]
