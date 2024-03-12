@@ -1,10 +1,18 @@
 [tool.poetry]
 name = "asteria"
-version = "1.3.0"
+version = "0.0.0" # handled by poetry-dynamic-versioning
 description = "Prometheus pull server for Hermes database metrics"
-authors = ["Bink <bink@bink.bink>"]
+authors = ["Bink <backend@bink.com>"]
 readme = "README.md"
 packages = [{include = "asteria"}]
+repository = "https://github.com/binkhq/asteria"
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.12',
+]
 
 [[tool.poetry.source]]
 name = "PyPI"
@@ -16,35 +24,32 @@ url = "https://pkgs.dev.azure.com/binkhq/_packaging/binkhq/pypi/simple/"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-sqlalchemy = "^1.4.49"
-psycopg2-binary = "^2.9.6"
-prometheus-client = "^0.17.1"
-falcon = "^3.1.1"
+python = "^3.12"
 gunicorn = "^20.1.0"
-python-decouple = "^3.8"
 bink-logging-utils = {extras = ["gunicorn"], version = "^1.3.0", source="azure"}
+psycopg = "^3.1.18"
+pydantic-settings = "^2.2.1"
+prometheus-client = "^0.20.0"
+falcon = "^3.1.3"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.7.0"
 mypy = "^1.4.1"
 xenon = "^0.9.0"
-isort = "^5.12.0"
-ruff = "^0.0.278"
 refurb = "^1.17.0"
 ipython = "^8.14.0"
 werkzeug = "^2.3.6"
+ruff = "^0.3.2"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.black]
-line-length = 120
+[tool.poetry-dynamic-versioning]
+vcs = "git"
+enable = true
 
-[tool.isort]
-profile = "black"
-line_length = 120
+[tool.poetry-dynamic-versioning.substitution]
+files = ['asteria/version.py']
 
 [tool.mypy]
 disallow_untyped_defs = true
@@ -53,21 +58,25 @@ warn_unused_ignores = true
 ignore_missing_imports = true
 disallow_incomplete_defs = true
 warn_redundant_casts = true
-# exclude = "alembic/versions/"
 plugins = [
-    "sqlalchemy.ext.mypy.plugin",
+    "pydantic.mypy",
 ]
 
 [tool.ruff]
 line-length = 120
-show-source = true
-target-version = "py311"
+output-format = "full"
+target-version = "py312"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
 select = [
     "F",    # Pyflakes (F)
     "E",
     "W",    # pycodestyle (E, W)
     "C90",  # mccabe (C90)
-    # isort (I)
+    "I",    # isort (I)
     # pydocstyle (D)
     "UP",   # pyupgrade (UP)
     "N",    # pep8-naming (N)
@@ -99,9 +108,6 @@ select = [
     "PLW",  # Pylint (PLC, PLE, PLR, PLW)
     "RUF",  # Ruff-specific rules (RUF)
 ]
-
-[tool.ruff.per-file-ignores]
-"asteria/database.py" = ["A003"]
 
 [tool.refurb]
 ignore = [
