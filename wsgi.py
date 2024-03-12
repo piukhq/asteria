@@ -1,7 +1,7 @@
 import sys
 
 from asteria.api import create_app
-from asteria.settings import ASTERIA_HOST, ASTERIA_PORT
+from asteria.settings import settings
 
 app = create_app()
 
@@ -11,4 +11,4 @@ if __name__ == "__main__":
     except ImportError:
         sys.exit("Werkzeug package not installed.")
 
-    werkzeug.run_simple(ASTERIA_HOST, ASTERIA_PORT, app)
+    werkzeug.run_simple(settings.ASTERIA_HOST, settings.ASTERIA_PORT, app)
